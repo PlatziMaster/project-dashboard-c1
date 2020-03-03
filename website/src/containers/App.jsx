@@ -16,8 +16,17 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>Total de conversations 2019 {stats.countConversations}</h1>
-      <RenderAreaChart data={stats.countConversationsByMonth} />
+      <div className="title">
+        <h1>Total de conversations 2019 {stats.countConversations}</h1>
+      </div>
+      <div className="dashboard">
+        <div className="card">
+          <RenderAreaChart data={stats.countConversationsByMonth} />
+        </div>
+        <div className="card"></div>
+        <div className="card"></div>
+        <div className="card"></div>
+      </div>
     </div>
   );
 };
