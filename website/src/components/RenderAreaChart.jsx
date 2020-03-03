@@ -11,7 +11,7 @@ import {
 const RenderAreaChart = ({data}) => {
   return (
     <AreaChart
-      width={500}
+      width={400}
       height={400}
       data={data}
       margin={{
@@ -22,7 +22,7 @@ const RenderAreaChart = ({data}) => {
       }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="label" />
+      <XAxis dataKey="name" />
       <YAxis />
       <Area type="monotone" dataKey="value" stroke="#8884d8" fill="#8884d8" /><Tooltip />
     </AreaChart>
