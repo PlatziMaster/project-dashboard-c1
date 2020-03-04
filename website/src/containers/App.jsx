@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RenderAreaChart from '../components/RenderAreaChart';
 import RenderPieChart from '../components/RenderPieChart';
 import RenderStackedBarChart from '../components/RenderStackedBarChart';
+import RenderBubbleChart from '../components/RenderBubbleChart';
 
 const App = () => {
   const [stats] = useState({
@@ -51,7 +52,9 @@ const App = () => {
         <div className="card">
           <RenderStackedBarChart data={stats.groupByRateConversationsByMonth} />
         </div>
-        <div className="card" />
+        <div className="card">
+          <RenderBubbleChart />
+        </div>
       </div>
     </div>
   );
