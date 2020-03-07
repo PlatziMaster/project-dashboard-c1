@@ -59,10 +59,8 @@ class ConversationsService {
     return {
       countConversationsByMonth: this.getCountConversationsByMonth(conversations),
       countConversations:  this.getCountConversations(conversations),
-      groupByRateConversations:  this.getGroupByRateConversations(conversations)
-      
+      groupByRateConversations:  this.getGroupByRateConversations(conversations) 
     }
-
 /*
     return {
       countConversationsByMonth: await this.getCountConversationsByMonth(),
@@ -71,17 +69,24 @@ class ConversationsService {
 */
   }
   getCountConversationsByMonth(conversations){
+    let conversationsBymonth = []
     const stadistics = conversations
     .map(item => item.created_at.getMonth())
     .reduce((response, month) => {
-      if(response[monthList[month]]){
-        response[monthList[month]] += 1;
+      if(response[month]){
+        response[month] += 1;
       } else {
-        response[monthList[month]] = 1;
+        response[month] = 1;
       }
       return response;
     },{})
-    return stadistics;
+    Object.keys(stadistics).map(item => {
+      conversationsBymonth.push({ name: monthList[item],
+        value: stadistics[item]
+      });
+    });
+    console.log(conversationsBymonth);
+    return conversationsBymonth;
   }
   getCountConversations(conversations){
     let counter = 0;
@@ -103,6 +108,7 @@ class ConversationsService {
         }
         return response;
       },{})
+      //console.log(typeof(stadistics));
     return stadistics;
   }
 /*
