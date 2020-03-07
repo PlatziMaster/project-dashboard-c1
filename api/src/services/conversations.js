@@ -2,6 +2,20 @@ const { ViewQuery } = require('couchbase');
 const faker = require('faker');
 
 const CouchbaseLib = require('./../libs/couchbase');
+const monthList=[
+ 'Enero',
+ 'Febrero',
+ 'Marzo',
+ 'Abril',
+ 'Mayo',
+ 'Junio',
+ 'Julio',
+ 'Agosto',
+ 'Septiembre',
+ 'Octubre',
+ 'Noviembre',
+ 'Diciembre'
+]
 
 class ConversationsService {
 
@@ -58,7 +72,15 @@ class ConversationsService {
   }
   getCountConversationsByMonth(conversations){
     const stadistics = conversations
-    .map(item => item.created_at)
+    .map(item => item.created_at.getMonth())
+    .reduce((response, month) => {
+      if(response[monthList[month]]){
+        response[monthList[month]] += 1;
+      } else {
+        response[monthList[month]] = 1;
+      }
+      return response;
+    },{})
     return stadistics;
   }
   getCountConversations(conversations){
