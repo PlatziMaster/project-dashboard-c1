@@ -32,12 +32,58 @@ class ConversationsService {
   }
 
   async getStats() {
+    // usamos Fake para generar datos aleatorios
+    const conversations = [];
+    for ( let index = 0; index < 1000 ; index++) {
+      conversations.push({
+        rate: faker.random.number({min:1, max:10}),
+        created_at: faker.date.past(),
+        customer_id: faker.random.uuid(),
+        type: "conversation",
+      })
+    }
+    return {
+      countConversationsByMonth: this.getCountConversationsByMonth(conversations),
+      countConversations:  this.getCountConversations(conversations),
+      groupByRateConversations:  this.getGroupByRateConversations(conversations)
+      
+    }
+
+/*
     return {
       countConversationsByMonth: await this.getCountConversationsByMonth(),
       countConversations: await this.countConversations(),
     }
+*/
+  }
+  getCountConversationsByMonth(conversations){
+    const stadistics = conversations
+    .map(item => item.created_at)
+    return stadistics;
+  }
+  getCountConversations(conversations){
+    let counter = 0;
+    conversations
+    .map(() => counter++);
+    return counter
   }
 
+  getGroupByRateConversations(conversations) {
+    const stadistics = conversations
+      .map(item => item.rate)
+      .reduce((response, rate) => {
+        //console.log(response);
+        //console.log(rate);
+        if(response[rate]){
+          response[rate] += 1;
+        } else {
+          response[rate] = 1;
+        }
+        return response;
+      },{})
+    return stadistics;
+  }
+/*
   async getCountConversationsByMonth() {
     const viewQuery = ViewQuery
     .from('conversations', 'count_by_date')
@@ -50,7 +96,7 @@ class ConversationsService {
       }
     })
   }
-
+*/
   async countConversations() {
     const viewQuery = ViewQuery
     .from('conversations', 'count_by_date')
