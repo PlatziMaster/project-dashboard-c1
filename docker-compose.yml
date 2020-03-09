@@ -13,6 +13,8 @@ services:
       - CDB_NAME=platzi_store
       - CDB_PORT=8091
       - CDB_HOST=couchbase
+      - CDB_USER=admin
+      - CDB_PASSWORD=admin123
       - NODE_ENV=dev
     depends_on:
       - mongo

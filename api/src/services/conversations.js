@@ -1,4 +1,4 @@
-const { ViewQuery } = require('couchbase');
+//const { ViewQuery } = require('couchbase');
 const faker = require('faker');
 
 const CouchbaseLib = require('./../libs/couchbase');
@@ -46,28 +46,34 @@ class ConversationsService {
   }
 
   async getStats() {
-    // usamos Fake para generar datos aleatorios
-    const conversations = [];
-    for ( let index = 0; index < 1000 ; index++) {
-      conversations.push({
-        rate: faker.random.number({min:1, max:10}),
-        created_at: faker.date.past(),
-        customer_id: faker.random.uuid(),
-        type: "conversation",
-      })
-    }
+    const conversations = await this.getAllConversations()
+   
     return {
-      countConversationsByMonth: this.getCountConversationsByMonth(conversations),
-      countConversations:  this.getCountConversations(conversations),
-      groupByRateConversations:  this.getGroupByRateConversations(conversations) 
+     // countConversationsByMonth: await this.getCountConversationsByMonth(conversations),
+      countConversations:  conversations.length,
+      groupByRateConversations: await this.getGroupByRateConversations(conversations)
     }
-/*
-    return {
-      countConversationsByMonth: await this.getCountConversationsByMonth(),
-      countConversations: await this.countConversations(),
-    }
-*/
   }
+  getGroupByRateConversations(conversations) {
+    let groupByRateConversations = [];
+    const stadistics = conversations
+      .map(item => item.rate)
+      .reduce((response, rate) => {
+        if(response[rate]){
+          response[rate] += 1;
+        } else {
+          response[rate] = 1;
+        }
+        return response;
+      },{})
+      Object.keys(stadistics).map(item => {
+        groupByRateConversations.push({ name: item,
+          value: stadistics[item]
+        });
+      });
+      return groupByRateConversations;
+    }
+    
   getCountConversationsByMonth(conversations){
     let conversationsBymonth = []
     const stadistics = conversations
@@ -85,36 +91,14 @@ class ConversationsService {
         value: stadistics[item]
       });
     });
-    console.log(conversationsBymonth);
     return conversationsBymonth;
   }
-  getCountConversations(conversations){
-    let counter = 0;
-    conversations
-    .map(() => counter++);
-    return counter
-  }
 
-  getGroupByRateConversations(conversations) {
-    const stadistics = conversations
-      .map(item => item.rate)
-      .reduce((response, rate) => {
-        //console.log(response);
-        //console.log(rate);
-        if(response[rate]){
-          response[rate] += 1;
-        } else {
-          response[rate] = 1;
-        }
-        return response;
-      },{})
-      //console.log(typeof(stadistics));
-    return stadistics;
-  }
+
 /*
   async getCountConversationsByMonth() {
     const viewQuery = ViewQuery
-    .from('conversations', 'count_by_date')
+    .from('platzi_store', 'count_by_date')
     .group_level(2);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
@@ -124,7 +108,7 @@ class ConversationsService {
       }
     })
   }
-*/
+
   async countConversations() {
     const viewQuery = ViewQuery
     .from('conversations', 'count_by_date')
@@ -133,7 +117,13 @@ class ConversationsService {
     const values = rta.map(item => item.value);
     return values.length === 0 ? 0 : values[0];
   }
+  //anteriores
 
+
+
+
+
+*/
 
 }
 

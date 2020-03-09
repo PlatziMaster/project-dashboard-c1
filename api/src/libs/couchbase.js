@@ -7,7 +7,7 @@ class CouchbaseLib {
 
   constructor() {
     this.cluster = new Cluster(COUCHBASE_URI);
-    this.cluster.authenticate('admin', 'admin123');
+    this.cluster.authenticate(config.cdbUser, config.cdbPassword);
   }
 
   getBucket() {
