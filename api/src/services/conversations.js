@@ -54,26 +54,7 @@ class ConversationsService {
       groupByRateConversations: await this.getGroupByRateConversations(conversations)
     }
   }
-  getGroupByRateConversations(conversations) {
-    let groupByRateConversations = [];
-    const stadistics = conversations
-      .map(item => item.rate)
-      .reduce((response, rate) => {
-        if(response[rate]){
-          response[rate] += 1;
-        } else {
-          response[rate] = 1;
-        }
-        return response;
-      },{})
-      Object.keys(stadistics).map(item => {
-        groupByRateConversations.push({ name: item,
-          value: stadistics[item]
-        });
-      });
-      return groupByRateConversations;
-    }
-    
+   
   getCountConversationsByMonth(conversations){
     let conversationsBymonth = []
     const stadistics = conversations
@@ -93,6 +74,25 @@ class ConversationsService {
     });
     return conversationsBymonth;
   }
+  getGroupByRateConversations(conversations) {
+    let groupByRateConversations = [];
+    const stadistics = conversations
+      .map(item => item.rate)
+      .reduce((response, rate) => {
+        if(response[rate]){
+          response[rate] += 1;
+        } else {
+          response[rate] = 1;
+        }
+        return response;
+      },{})
+      Object.keys(stadistics).map(item => {
+        groupByRateConversations.push({ name: item,
+          value: stadistics[item]
+        });
+      });
+      return groupByRateConversations;
+    }
 
 
 /*
