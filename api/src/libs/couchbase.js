@@ -3,6 +3,7 @@ const { config } = require('./../config/index');
 
 const COUCHBASE_URI = `couchbase://${config.cdbHost}:${config.cdbPort}`;
 
+
 class CouchbaseLib {
 
   constructor() {

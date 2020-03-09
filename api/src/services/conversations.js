@@ -1,8 +1,9 @@
-//const { ViewQuery } = require('couchbase');
+const { ViewQuery } = require('couchbase');
 const faker = require('faker');
 
 const CouchbaseLib = require('./../libs/couchbase');
 const monthList=[
+  null,
  'Enero',
  'Febrero',
  'Marzo',
@@ -49,16 +50,22 @@ class ConversationsService {
     const conversations = await this.getAllConversations()
    
     return {
-     // countConversationsByMonth: await this.getCountConversationsByMonth(conversations),
+      countConversationsByMonth: await this.getCountConversationsByMonth(),
       countConversations:  conversations.length,
-      groupByRateConversations: await this.getGroupByRateConversations(conversations)
+      groupByRateConversations: await this.getGroupByRateConversations(conversations),
+      groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(),
+
     }
   }
    
-  getCountConversationsByMonth(conversations){
+  async getCountConversationsByMonth(){
     let conversationsBymonth = []
-    const stadistics = conversations
-    .map(item => item.created_at.getMonth())
+    const conversations = ViewQuery
+    .from('conversations', 'count_by_date')
+    const rta = await this.couchbaseClient.runView(conversations);
+    const stadistics = rta.map(item => {
+      return item.key[1]
+    })
     .reduce((response, month) => {
       if(response[month]){
         response[month] += 1;
@@ -93,37 +100,18 @@ class ConversationsService {
       });
       return groupByRateConversations;
     }
+    async getGroupByRateConversationsByMonth(){
+      const conversations = ViewQuery
+      .from('conversations', 'GroupByRateConversationsByMonth')
+      const rta = await this.couchbaseClient.runView(conversations);
+      const stadistics = rta.map(item => {
+        return item
+      })
+      return stadistics;
+    }
+    
 
 
-/*
-  async getCountConversationsByMonth() {
-    const viewQuery = ViewQuery
-    .from('platzi_store', 'count_by_date')
-    .group_level(2);
-    const rta = await this.couchbaseClient.runView(viewQuery);
-    return rta.map(item => {
-      return {
-        label: item.key[1],
-        value: item.value
-      }
-    })
-  }
-
-  async countConversations() {
-    const viewQuery = ViewQuery
-    .from('conversations', 'count_by_date')
-    .group_level(1);
-    const rta = await this.couchbaseClient.runView(viewQuery);
-    const values = rta.map(item => item.value);
-    return values.length === 0 ? 0 : values[0];
-  }
-  //anteriores
-
-
-
-
-
-*/
 
 }
 

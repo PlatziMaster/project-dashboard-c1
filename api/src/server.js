@@ -9,10 +9,10 @@ const { config } = require('./config/index');
 app.use(cors());
 app.use(bodyParser.json());
 
-const ordersApi = require('./routes/orders');
+//const ordersApi = require('./routes/orders');
 const conversationsApi = require('./routes/conversations');
 
-ordersApi(app);
+//ordersApi(app);
 conversationsApi(app);
 
 app.listen(config.port, () => {
