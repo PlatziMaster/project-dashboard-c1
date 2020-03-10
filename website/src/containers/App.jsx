@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RenderAreaChart from '../components/RenderAreaChart';
 import RenderPieChart from '../components/RenderPieChart';
 import RenderStackedBarChart from '../components/RenderStackedBarChart';
 import RenderBubbleChart from '../components/RenderBubbleChart';
 
 const App = () => {
+  const [stats, setStats] = useState({ 
+    countConversationsByMonth: [],
+    countConversations: 0,
+    groupByRateConversations: [],
+    groupByRateConversationsByMonth: [],
+  })
+
+  /*
   const [stats] = useState({
     countConversationsByMonth: [
       { name: 'Enero', value: 434 },
@@ -232,13 +240,14 @@ const App = () => {
       },
     },
   });
+*/
+   useEffect(() => {
+     fetch('http://localhost:3000/api/conversations/stats')
+     .then(data => data.json())
+     .then(data => setStats(data));
+   }, []);
 
-  // useEffect(() => {
-  //   fetch('http://localhost:3000/api/conversations/stats')
-  //   .then(data => data.json())
-  //   .then(data => setStats(data));
-  // }, []);
-
+  console.log(stats);
   return (
     <div className="container">
       <div className="title">

@@ -31,7 +31,6 @@ class ConversationsService {
       WHERE doc.type = "conversation"`;
     return await this.couchbaseClient.runQuery(query);
   }
-
   async createConversations() {
     const docs = [];
     for (let index = 0; index < 50; index++) {
@@ -50,10 +49,10 @@ class ConversationsService {
     const conversations = await this.getAllConversations()
    
     return {
-      countConversationsByMonth: await this.getCountConversationsByMonth(),
+      countConversationsByMonth: await this.getCountConversationsByMonth(conversations),
       countConversations:  conversations.length,
       groupByRateConversations: await this.getGroupByRateConversations(conversations),
-      groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(),
+      groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(conversations),
 
     }
   }
@@ -64,7 +63,7 @@ class ConversationsService {
     .from('conversations', 'count_by_date')
     const rta = await this.couchbaseClient.runView(conversations);
     const stadistics = rta.map(item => {
-      return item.key[1]
+      return item.key
     })
     .reduce((response, month) => {
       if(response[month]){
@@ -100,14 +99,26 @@ class ConversationsService {
       });
       return groupByRateConversations;
     }
-    async getGroupByRateConversationsByMonth(){
-      const conversations = ViewQuery
-      .from('conversations', 'GroupByRateConversationsByMonth')
-      const rta = await this.couchbaseClient.runView(conversations);
+    async getGroupByRateConversationsByMonth(conversations){
+      const data = ViewQuery
+      .from('conversations', 'count_by_date')
+      const rta = await this.couchbaseClient.runView(data);
       const stadistics = rta.map(item => {
-        return item
+        return item.key
       })
+      .reduce((response, month) => {
+        if(!response[month]){
+          response[month] = month;
+        }
+        return response;
+      },{})
+
+      console.log(conversations);
+
+
+
       return stadistics;
+
     }
     
 
