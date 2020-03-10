@@ -7,24 +7,24 @@ const App = () => {
 
   const [ stats, setStats ] = useState({
     countConversationsByMonth: [
-      {name: 'Enero', value: 434},
-      {name: 'Febrero', value: 363},
-      {name: 'Marzo', value: 242},
-      {name: 'Abril', value: 842},
+      {name: 'Enero', value: Math.random()},
+      {name: 'Febrero', value: Math.random()},
+      {name: 'Marzo', value: Math.random()},
+      {name: 'Abril', value: Math.random()},
     ],
-    countConversations: 23,
+    countConversations: 232,
     groupByRateConversations: [
-      {name: '1', value: 100},
-      {name: '2', value: 200},
-      {name: '3', value: 300},
-      {name: '4', value: 400},
-      {name: '5', value: 500},
+      {name: '1', value: Math.random()},
+      {name: '2', value: Math.random()},
+      {name: '3', value: Math.random()},
+      {name: '4', value: Math.random()},
+      {name: '5', value: Math.random()},
     ],
     groupByRateConversationsByMonth: [
-      {name: 'Enero', 1: 100, 2: 200, 3: 300, 4: 400, 5: 500},
-      {name: 'Febrero', 1: 234, 2: 454, 3: 453, 4: 978, 5: 500},
-      {name: 'Marzo', 1: 345, 2: 545, 3: 343, 4: 343, 5: 500},
-      {name: 'Abril', 1: 345, 2: 545, 3: 343, 4: 0, 5: 500},
+      {name: 'Enero', 1: Math.random(), 2: Math.random(), 3: Math.random(), 4: Math.random()},
+      {name: 'Febrero', 1: Math.random(), 2: Math.random(), 3: Math.random(), 4: Math.random()},
+      {name: 'Marzo', 1: Math.random(), 2: Math.random(), 3: Math.random(), 4: Math.random()},
+      {name: 'Abril', 1: Math.random(), 2: Math.random(), 3: Math.random(), 4: Math.random()},
     ]
   });
 
@@ -48,9 +48,6 @@ const App = () => {
         </div>
         <div className="card">
           <RenderStackedBarChart data={stats.groupByRateConversationsByMonth} />
-        </div>
-        <div className="card">
-
         </div>
       </div>
     </div>
