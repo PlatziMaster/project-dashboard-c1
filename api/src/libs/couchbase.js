@@ -4,10 +4,9 @@ const { config } = require('./../config/index');
 const COUCHBASE_URI = `couchbase://${config.cdbHost}:${config.cdbPort}`;
 
 class CouchbaseLib {
-
   constructor() {
     this.cluster = new Cluster(COUCHBASE_URI);
-    this.cluster.authenticate('admin', 'admin123');
+    this.cluster.authenticate(config.cdbUser, config.cdbPassword);
   }
 
   getBucket() {
@@ -23,7 +22,7 @@ class CouchbaseLib {
         } else {
           resolve(rows);
         }
-      })
+      });
     });
   }
 
@@ -36,7 +35,7 @@ class CouchbaseLib {
           resolve(results);
         }
       });
-    })
+    });
   }
 
   async insertDoc(doc) {
@@ -55,7 +54,6 @@ class CouchbaseLib {
     const promises = docs.map(doc => this.insertDoc(doc));
     return Promise.all(promises);
   }
-
 }
 
 module.exports = CouchbaseLib;

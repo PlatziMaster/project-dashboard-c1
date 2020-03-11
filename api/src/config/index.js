@@ -9,8 +9,8 @@ const config = {
   cdbName: process.env.CDB_NAME,
   cdbPort: process.env.CDB_PORT,
   cdbHost: process.env.CDB_HOST,
+  cdbUser: process.env.CDB_USER,
+  cdbPassword: process.env.CDB_PWD
 };
-
-console.log(config);
 
 module.exports = { config };
