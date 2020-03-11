@@ -252,8 +252,8 @@ const App = () => {
     <div className="container">
       <div className="title">
         <h1>
-          Total de conversations 2019
-          {stats.countConversations}
+          Total de conversations 2019 
+          {stats.countConversations} 
         </h1>
       </div>
       <div className="grid">
@@ -265,9 +265,6 @@ const App = () => {
         </div>
         <div className="card">
           <RenderStackedBarChart data={stats.groupByRateConversationsByMonth} />
-        </div>
-        <div className="card">
-          <RenderBubbleChart data={stats.groupByConversationbyHour} />
         </div>
       </div>
     </div>
