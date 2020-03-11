@@ -26,12 +26,14 @@ function (doc, meta) {
 ```
 
 ## Group rates
+group_by_rate
 
 ```js
 function (doc, meta) {
   if(
     doc.type === 'conversation' &&
-    doc.created_at
+    doc.created_at &&
+    doc.rate
   ){
     var datetime = doc.created_at.split('T');
     var date = datetime[0].split('-')

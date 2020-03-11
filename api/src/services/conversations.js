@@ -4,7 +4,6 @@ const faker = require('faker');
 const CouchbaseLib = require('./../libs/couchbase');
 
 class ConversationsService {
-
   constructor() {
     this.couchbaseClient = new CouchbaseLib();
   }
@@ -33,34 +32,66 @@ class ConversationsService {
 
   async getStats() {
     return {
+      countConversations: await this.getCountConversations(),
       countConversationsByMonth: await this.getCountConversationsByMonth(),
-      countConversations: await this.countConversations(),
-    }
+      groupByRateConversations: await this.getGroupByRateConversations(),
+      groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(),
+    };
+  }
+
+  async getCountConversations() {
+    const viewQuery = ViewQuery.from(
+      'conversations',
+      'count_by_date'
+    );
+    const rta = await this.couchbaseClient.runView(viewQuery);
+    return rta.length > 0 ? rta[0].value : 0;
   }
 
   async getCountConversationsByMonth() {
-    const viewQuery = ViewQuery
-    .from('conversations', 'count_by_date')
-    .group_level(2);
+    const viewQuery = ViewQuery.from(
+      'conversations',
+      'count_by_date'
+    ).group_level(2);
+    const rta = await this.couchbaseClient.runView(viewQuery);
+
+    return rta.map(item => {
+      return {
+        name: item.key[1],
+        value: item.value
+      };
+    });
+  }
+
+  async getGroupByRateConversations() {
+    const viewQuery = ViewQuery.from(
+      'conversations',
+      'group_by_rate'
+    );
+    const rta = await this.couchbaseClient.runView(viewQuery);
+    if (rta.length > 0) {
+      const data = rta[0].value;
+      return Object.keys(data).map(key => ({
+        name: key,
+        value: data[key]
+      }))
+    };
+    return [];
+  }
+
+  async getGroupByRateConversationsByMonth() {
+    const viewQuery = ViewQuery.from(
+      'conversations',
+      'group_by_rate'
+    ).group_level(2);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
-        label: item.key[1],
-        value: item.value
-      }
-    })
+        ...item.value,
+        name: item.key[1]
+      };
+    });
   }
-
-  async countConversations() {
-    const viewQuery = ViewQuery
-    .from('conversations', 'count_by_date')
-    .group_level(1);
-    const rta = await this.couchbaseClient.runView(viewQuery);
-    const values = rta.map(item => item.value);
-    return values.length === 0 ? 0 : values[0];
-  }
-
-
 }
 
 module.exports = ConversationsService;
