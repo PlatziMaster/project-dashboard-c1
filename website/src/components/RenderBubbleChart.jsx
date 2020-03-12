@@ -21,7 +21,6 @@ const parseDomain = (keys, data) => {
 
 const RenderBubbleChart = ({ data }) => {
   let i = 0;
-  // console.log(JSON.stringify(data));
   const keys = Object.keys(data);
   const domain = parseDomain(keys, data);
   // console.log(domain);

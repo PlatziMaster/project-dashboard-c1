@@ -17,7 +17,15 @@ const monthList=[
  'Noviembre',
  'Diciembre'
 ]
-
+const weekday=[
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+]
 class ConversationsService {
 
   constructor() {
@@ -53,6 +61,7 @@ class ConversationsService {
       countConversations:  conversations.length,
       groupByRateConversations: await this.getGroupByRateConversations(),
       groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(),
+      groupByConversationbyHour: await this.getGroupByConversationbyHour()
     }
   }
   async getCountConversationsByMonth(){
@@ -98,10 +107,40 @@ class ConversationsService {
       return stadistics;
 
     }
-    
+    async getGroupByConversationbyHour(){
+      let conversationsByHour = [];
+      let stadistics = {};
+      let i=0;
+      const data = ViewQuery.from(
+        'conversations',
+        'group_by_coversations_by_hour'
+        )
+        .group_level('2')
+      const rta = await this.couchbaseClient.runView(data);
+      stadistics = rta.map(data => {
+        conversationsByHour = [];
+        Object.keys(data.value).map(item => {
+          let text = `${item}hrs`
+          conversationsByHour.push({ 
+            hour: text,
+            index: 1,
+            value: data.value[item],
+          });
+        })
+        i++;
+        return {
+          id: i,
+          title: weekday[data.key],
+          data : conversationsByHour,
+        };
+      }).reduce((response, item) => {
+        response[item.id] = item
+        return response
+      }, {})
 
-
-
+      console.log(stadistics);
+      return stadistics;
+    }
 }
 
 module.exports = ConversationsService;
