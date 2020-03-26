@@ -11,8 +11,6 @@ const App = () => {
     countConversationsByYears: [],
     countConversationsByMonths: [],
     countConversationsByDays: [],
-    groupByRateConversations: [],
-    groupByRateConversationsByMonth: [],
   });
 
   const [filter, setFilter] = useState('2019');
@@ -34,13 +32,6 @@ const App = () => {
         <h1>
           Total de conversations 2019 <b>{stats.countConversations}</b>
         </h1>
-        <select value={filter} onChange={e => handleChange(e)}>
-          <option value="2019">2019</option>
-          <option value="Enero">Enero</option>
-          <option value="Febrero">Febrero</option>
-          <option value="Marzo">Marzo</option>
-          <option value="3-days">Últimos 3 días</option>
-        </select>
       </div>
       <div className="grid">
         <div className="card">
@@ -52,12 +43,12 @@ const App = () => {
         <div className="card">
           <RenderAreaChart data={stats.countConversationsByDays} />
         </div>
-        <div className="card">
+        {/* <div className="card">
           <RenderPieChart data={stats.groupByRateConversations} />
         </div>
         <div className="card">
           <RenderStackedBarChart data={stats.groupByRateConversationsByMonth} />
-        </div>
+        </div> */}
         <div className="card">
           {/* <RenderBubbleChart data={stats.groupByRateConversations} /> */}
         </div>
