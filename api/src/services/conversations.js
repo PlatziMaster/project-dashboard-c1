@@ -33,20 +33,32 @@ class ConversationsService {
     return await this.couchbaseClient.insertDocuments(docs);
   }
 
-  async getStats() {
+  async getStats(startDate, endDate) {
+    const startDateArray = startDate.split('/').map(item => parseInt(item, 10));
+    const endDateArray = endDate.split('/').map(item => parseInt(item, 10));
+
+    const diff = differenceInDays(new Date(endDate), new Date(startDate));
+    console.log('diff', diff);
+    let countConversationsByTime = [];
+    if (diff <= 30) {
+      countConversationsByTime = await this.getCountConversationsByDays(startDateArray, endDateArray);
+    } else if(diff > 30 && diff <= 365) {
+      countConversationsByTime = await this.getCountConversationsByMonths(startDateArray, endDateArray);
+    } else if(diff > 365) {
+      countConversationsByTime = await this.getCountConversationsByYears(startDateArray, endDateArray);
+    }
+
     return {
-      countConversations: await this.getCountConversations(),
-      countConversationsByDays: await this.getCountConversationsByDays(),
-      countConversationsByMonths: await this.getCountConversationsByMonths(),
-      countConversationsByYears: await this.getCountConversationsByYears(),
+      countConversations: await this.getCountConversations(startDateArray, endDateArray),
+      countConversationsByTime: countConversationsByTime,
     };
   }
 
-  async getCountConversations() {
+  async getCountConversations(startDateArray, endDateArray) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
-    );
+    ).range(startDateArray, endDateArray);
     const rta = await this.couchbaseClient.runView(viewQuery);
     if (rta.length > 0) {
       return rta[0].value;
@@ -54,12 +66,13 @@ class ConversationsService {
     return 0;
   }
 
-  async getCountConversationsByYears() {
+  async getCountConversationsByYears(startDateArray, endDateArray) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(1);
+    .group_level(1)
+    .range(startDateArray, endDateArray);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
@@ -69,12 +82,13 @@ class ConversationsService {
     });
   }
 
-  async getCountConversationsByMonths() {
+  async getCountConversationsByMonths(startDateArray, endDateArray) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(2);
+    .group_level(2)
+    .range(startDateArray, endDateArray);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
@@ -84,12 +98,13 @@ class ConversationsService {
     });
   }
 
-  async getCountConversationsByDays() {
+  async getCountConversationsByDays(startDateArray, endDateArray) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(3);
+    .group_level(3)
+    .range(startDateArray, endDateArray);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
