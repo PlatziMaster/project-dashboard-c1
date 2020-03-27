@@ -13,17 +13,10 @@ const App = () => {
     countConversationsByDays: [],
   });
 
-  const [filter, setFilter] = useState('2019');
-
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-    console.log(event.target.value);
-  }
-
   useEffect(() => {
     fetch('http://localhost:3000/api/conversations/stats')
       .then(data => data.json())
-      .then(data =>  setStats(data));
+      .then(data => setStats(data));
   }, []);
 
   return (

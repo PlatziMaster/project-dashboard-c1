@@ -33,40 +33,21 @@ class ConversationsService {
     return await this.couchbaseClient.insertDocuments(docs);
   }
 
-  async getStats(startDate, endDate) {
-    console.log(startDate, endDate);
-
-    const startDateArray = startDate.split("/").map(item => parseInt(item, 10));
-    const endDateArray = endDate.split("/").map(item => parseInt(item, 10));
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-    const diff = differenceInDays(endDate, startDate);
-    console.log(diff);
-    let countConversationsByTime = [];
-    if (diff <= 90) {
-      countConversationsByTime = await this.getCountConversationsByDays(startDateArray, endDateArray);
-    }
-    if (diff > 90 && diff <= 365) {
-      countConversationsByTime = await this.getCountConversationsByMoths();
-    }
-    if (diff > 365) {
-      countConversationsByTime = await this.getCountConversationsByYears();
-    }
+  async getStats() {
     return {
-      countConversations: await this.getCountConversations(startDateArray, endDateArray),
-      countConversationsByTime: countConversationsByTime,
-      // groupByRateConversationsByMonth: await this.getGroupByRateConversationsByMonth(),
-      // groupByRateConversations: await this.getGroupByRateConversations()
+      countConversations: await this.getCountConversations(),
+      countConversationsByDays: await this.getCountConversationsByDays(),
+      countConversationsByMonths: await this.getCountConversationsByMonths(),
+      countConversationsByYears: await this.getCountConversationsByYears(),
     };
   }
 
-  async getCountConversations(startKey, endKey) {
+  async getCountConversations() {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
-    ).range(startKey, endKey);
+    );
     const rta = await this.couchbaseClient.runView(viewQuery);
-    console.log(rta);
     if (rta.length > 0) {
       return rta[0].value;
     }
@@ -88,7 +69,7 @@ class ConversationsService {
     });
   }
 
-  async getCountConversationsByMoths() {
+  async getCountConversationsByMonths() {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
@@ -103,13 +84,12 @@ class ConversationsService {
     });
   }
 
-  async getCountConversationsByDays(startKey, endKey) {
+  async getCountConversationsByDays() {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(3)
-    .range(startKey, endKey);
+    .group_level(3);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
