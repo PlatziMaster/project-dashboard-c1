@@ -21,12 +21,12 @@ class ConversationsService {
 
   async createConversations() {
     const docs = [];
-    for (let index = 0; index < 50; index++) {
+    for (let index = 0; index < 200; index++) {
       docs.push({
         id: faker.random.uuid(),
         customer_id: faker.random.number(12),
         rate: faker.random.number(6),
-        created_at: faker.date.between('2019-01-01', '2019-12-31'),
+        created_at: faker.date.between('2020-01-01', '2020-03-31'),
         type: 'conversation'
       });
     }
@@ -34,23 +34,20 @@ class ConversationsService {
   }
 
   async getStats(startDate, endDate) {
-    console.log(startDate, endDate);
-
     const startDateArray = startDate.split("/").map(item => parseInt(item, 10));
     const endDateArray = endDate.split("/").map(item => parseInt(item, 10));
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-    const diff = differenceInDays(endDate, startDate);
+    console.log(startDateArray, endDateArray);
+    const diff = differenceInDays(new Date(endDate), new Date(startDate));
     console.log(diff);
     let countConversationsByTime = [];
-    if (diff <= 90) {
+    if (diff <= 31) {
       countConversationsByTime = await this.getCountConversationsByDays(startDateArray, endDateArray);
     }
-    if (diff > 90 && diff <= 365) {
-      countConversationsByTime = await this.getCountConversationsByMoths();
+    if (diff > 31 && diff < 365) {
+      countConversationsByTime = await this.getCountConversationsByMoths(startDateArray, endDateArray);
     }
-    if (diff > 365) {
-      countConversationsByTime = await this.getCountConversationsByYears();
+    if (diff >= 365) {
+      countConversationsByTime = await this.getCountConversationsByYears(startDateArray, endDateArray);
     }
     return {
       countConversations: await this.getCountConversations(startDateArray, endDateArray),
@@ -66,19 +63,19 @@ class ConversationsService {
       'count_by_date'
     ).range(startKey, endKey);
     const rta = await this.couchbaseClient.runView(viewQuery);
-    console.log(rta);
     if (rta.length > 0) {
       return rta[0].value;
     }
     return 0;
   }
 
-  async getCountConversationsByYears() {
+  async getCountConversationsByYears(startKey, endKey) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(1);
+    .group_level(1)
+    .range(startKey, endKey);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
@@ -88,12 +85,13 @@ class ConversationsService {
     });
   }
 
-  async getCountConversationsByMoths() {
+  async getCountConversationsByMoths(startKey, endKey) {
     const viewQuery = ViewQuery.from(
       'conversations',
       'count_by_date'
     )
-    .group_level(2);
+    .group_level(2)
+    .range(startKey, endKey);
     const rta = await this.couchbaseClient.runView(viewQuery);
     return rta.map(item => {
       return {
