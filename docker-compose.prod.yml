@@ -4,6 +4,7 @@ services:
     build:
       context: ./api
       dockerfile: dev.dockerfile
+    image: 'project-dashboard-conversations_api:latest'
     ports:
       - '3000-3005:3000'
     environment:
