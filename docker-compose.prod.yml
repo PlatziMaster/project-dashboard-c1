@@ -20,6 +20,8 @@ services:
     depends_on:
       - mongo
       - couchbase
+    deploy:
+      replicas: 5
   mongo:
     image: mongo
     ports:
