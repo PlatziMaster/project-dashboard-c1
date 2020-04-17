@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: dev.dockerfile
+    ports:
+      - '3000-3005:3000'
+    environment:
+      - MDB_NAME=platzi-store
+      - MDB_PORT=27017
+      - MDB_HOST=mongo
+      - CDB_NAME=platzi_store
+      - CDB_PORT=8091
+      - CDB_HOST=couchbase
+      - CDB_USER=admin
+      - CDB_PWD=admin123
+      - NODE_ENV=dev
+    depends_on:
+      - mongo
+      - couchbase
+  mongo:
+    image: mongo
+    ports:
+      - '27017-27019:27017-27019'
+  couchbase:
+    image: couchbase:enterprise-6.0.2
+    ports:
+      - '8091-8096:8091-8096'
+      - '11210-11211:11210-11211'
