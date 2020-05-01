@@ -35,3 +35,9 @@ services:
       - '11210-11211:11210-11211'
     volumes:
       - ./couchbase/local_data:/opt/couchbase/var
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    ports:
+      - '8080:80'

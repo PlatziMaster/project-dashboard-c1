@@ -8,3 +8,9 @@ docker service ps
 docker service ps pinger
 docker service create --name pinger alpine ping www.google.com
 docker service scale pinger=5
+
+
+db.platzi-dashboard.com
+api.platzi-dashboard.com
+platzi-dashboard.com
+celery.platzi-dashboard.com
