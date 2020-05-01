@@ -6,7 +6,7 @@ services:
       dockerfile: dev.dockerfile
     image: 'project-dashboard-conversations_api:latest'
     ports:
-      - '3000-3005:3000'
+      - '3000:3000'
     environment:
       - MDB_NAME=platzi-store
       - MDB_PORT=27017
