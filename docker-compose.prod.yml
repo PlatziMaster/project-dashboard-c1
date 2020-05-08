@@ -5,8 +5,6 @@ services:
       context: ./api
       dockerfile: dev.dockerfile
     image: 'project-dashboard-conversations_api:latest'
-    ports:
-      - '3000:3000'
     environment:
       - MDB_NAME=platzi-store
       - MDB_PORT=27017
@@ -17,17 +15,55 @@ services:
       - CDB_USER=admin
       - CDB_PWD=admin123
       - NODE_ENV=dev
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:api.nicobytes.site
+        - traefik.enable=true
+        - traefik.port=3000
+        - traefik.tags=traefik-public
+        - traefik.docker.network=traefik-public
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        - traefik.webservice.frontend.entryPoints=https
     depends_on:
       - mongo
       - couchbase
-    deploy:
-      replicas: 5
-  mongo:
-    image: mongo
-    ports:
-      - '27017-27019:27017-27019'
+    networks:
+      - traefik-public
+      - default
   couchbase:
     image: couchbase:enterprise-6.0.2
-    ports:
-      - '8091-8096:8091-8096'
-      - '11210-11211:11210-11211'
+    volumes:
+      - couchbase-data:/opt/couchbase/var
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:db.nicobytes.site
+        - traefik.enable=true
+        - traefik.port=8091
+        - traefik.tags=traefik-public
+        - traefik.docker.network=traefik-public
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.redirectorservice.frontend.redirect.entryPoint=https
+        - traefik.webservice.frontend.entryPoints=https
+    networks:
+      - traefik-public
+      - default
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    deploy:
+      labels:
+        - traefik.frontend.rule=Host:app.nicobytes.site
+        - traefik.enable=true
+        - traefik.port=80
+        - traefik.tags=traefik-public
+        - traefik.docker.network=traefik-public
+        - traefik.redirectorservice.frontend.entryPoints=http
+        - traefik.webservice.frontend.entryPoints=https
+    networks:
+      - traefik-public
+      - default
+
+volumes:
+  couchbase-data:
