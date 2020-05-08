@@ -69,3 +69,7 @@ services:
 
 volumes:
   couchbase-data:
+
+networks:
+  traefik-public:
+    external: true
