@@ -51,6 +51,7 @@ services:
   mongo:
     image: mongo
   webapp:
+    image: 'project-dashboard-c1_webapp:latest'
     build:
       context: ./webapp
       dockerfile: Dockerfile
