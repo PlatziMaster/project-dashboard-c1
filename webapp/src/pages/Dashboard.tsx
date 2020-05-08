@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
     const endAt = format(today, "yyyy/MM/dd");
     const startAt = format(sub(today, { days: 7 }), "yyyy/MM/dd");
     fetch(
-      `http://localhost:3000/api/conversations/stats?start_date=${startAt}&end_date=${endAt}`
+      `https://api.nicobytes.site/api/conversations/stats?start_date=${startAt}&end_date=${endAt}`
     )
       .then(data => data.json())
       .then(data => setStats(data));
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
     const endAt = option.endAt;
     const startAt = option.startAt;
     fetch(
-      `http://localhost:3000/api/conversations/stats?start_date=${startAt}&end_date=${endAt}`
+      `https://api.nicobytes.site/api/conversations/stats?start_date=${startAt}&end_date=${endAt}`
     )
       .then(data => data.json())
       .then(data => setStats(data));

@@ -48,6 +48,8 @@ services:
     networks:
       - traefik-public
       - default
+  mongo:
+    image: mongo
   webapp:
     build:
       context: ./webapp
