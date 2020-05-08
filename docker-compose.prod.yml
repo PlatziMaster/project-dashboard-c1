@@ -57,7 +57,7 @@ services:
       dockerfile: Dockerfile
     deploy:
       labels:
-        - traefik.frontend.rule=Host:app.nicobytes.site
+        - traefik.frontend.rule=Host:nicobytes.site
         - traefik.enable=true
         - traefik.port=80
         - traefik.tags=traefik-public
